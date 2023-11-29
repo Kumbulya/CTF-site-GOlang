@@ -1,10 +1,14 @@
-FROM golang:1.16-alpine
+FROM golang:1.21.4-alpine
 
 # Set the working directory in the container
 WORKDIR /app
 
+
+
 COPY . .
 # Build your Go application
+RUN go mod download
+
 RUN go build main.go
 
 # Expose port 1337
