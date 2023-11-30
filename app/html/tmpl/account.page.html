@@ -1,0 +1,10 @@
+
+{{template "base" .}}
+ 
+{{define "title"}} Аккаунт{{end}}
+ 
+{{define "main"}}
+<p>Аккаунт: {{.Login}}</p>
+<p> ID в бд: {{.Id}}</p>
+<p> Пароль: {{.Password}}</p>
+{{end}}

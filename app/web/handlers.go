@@ -5,11 +5,13 @@ import (
 	"fmt"
 	"html/template"
 	"log"
+	"math/rand"
 	"net/http"
 	"strconv"
 )
 
 type User struct {
+	Id       int
 	Login    string
 	Password string
 	Page     string
@@ -32,7 +34,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	//http.ServeFile(w, r, "html/index.html")
+
 	err = ts.Execute(w, nil)
 	if err != nil {
 		log.Println(err.Error())
@@ -40,14 +42,49 @@ func home(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func account(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+func account(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	id, _ := strconv.Atoi(r.URL.Query().Get("id"))
+
+	query := fmt.Sprintf("SELECT * FROM `users` WHERE `page` = '%d'", id)
+
+	res, err := db.Query(query)
+	if err != nil {
+		http.Redirect(w, r, "/sign_in", http.StatusMovedPermanently)
+	}
+
+	defer res.Close()
+
+	user := User{}
+	for res.Next() {
+		err := res.Scan(&user.Id, &user.Login, &user.Password, &user.Page)
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+	}
+
+	files := []string{
+		"html/tmpl/account.page.html",
+		"html/tmpl/base.layout.html",
+		"html/tmpl/footer.partial.html",
+	}
+
 	if err != nil || id < 1 {
 		http.NotFound(w, r)
 		return
 	}
-	//http.ServeFile(w, r, "../html/account.html")
-	fmt.Fprintf(w, "Отображение выбранного аккаунта с ID %d...", id)
+	templ, err := template.ParseFiles(files...)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, "Internal Server Error", 500)
+		return
+	}
+
+	err = templ.Execute(w, user)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, "Internal Server Error", 500)
+	}
 }
 
 func sign_up(w http.ResponseWriter, r *http.Request, db *sql.DB) {
@@ -58,7 +95,7 @@ func sign_up(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 		res, err := db.Query(query)
 		if err != nil {
-			http.Redirect(w, r, "/sign_in", 301)
+			http.Redirect(w, r, "/sign_in", http.StatusMovedPermanently)
 		}
 		defer res.Close()
 
@@ -70,13 +107,13 @@ func sign_up(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 				continue
 			}
 		}
-		http.Redirect(w, r, "/account"+user.Page, 301)
+		http.Redirect(w, r, "/account?id="+user.Page, http.StatusMovedPermanently)
 
 	} else if r.Method == http.MethodGet {
 		http.ServeFile(w, r, "html/tmpl/sign_up.html")
 	} else {
 
-		http.Error(w, "Метод запрещен!", 405)
+		http.Error(w, "Метод запрещен!", http.StatusMethodNotAllowed)
 		return
 	}
 
@@ -108,20 +145,21 @@ func sign_in(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 			return
 		}
 
-		query = fmt.Sprintf("INSERT INTO `users` (`login`, `password`) VALUES ('%s','%s')", login_in, pass_in)
+		page := rand.Intn(100000)
+		query = fmt.Sprintf("INSERT INTO `users` (`login`, `password`, `page`) VALUES ('%s','%s','%d')", login_in, pass_in, page)
 		insert, err := db.Query(query)
 		if err != nil {
 			log.Println(err)
 		}
 
 		defer insert.Close()
-		http.Redirect(w, r, "/sign_up", 301)
+		http.Redirect(w, r, "/sign_up", http.StatusMovedPermanently)
 
 	} else if r.Method == http.MethodGet {
 		http.ServeFile(w, r, "html/tmpl/sign_in.html")
 	} else {
 
-		http.Error(w, "Метод запрещен!", 405)
+		http.Error(w, "Метод запрещен!", http.StatusMethodNotAllowed)
 		return
 	}
 

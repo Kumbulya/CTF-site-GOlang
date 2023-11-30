@@ -28,7 +28,7 @@ func main() {
 		sign_in(w, r, db)
 	})
 	mux.HandleFunc("/account", func(w http.ResponseWriter, r *http.Request) {
-		account(w, r)
+		account(w, r, db)
 	})
 
 	fileServer := http.FileServer(http.Dir("html/static/"))
