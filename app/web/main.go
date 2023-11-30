@@ -9,7 +9,7 @@ import (
 
 func main() {
 
-	db, err := sql.Open("mysql", "test:test@tcp(127.0.0.1:3307)/magazin")
+	db, err := sql.Open("mysql", "test:test@tcp(database:3306)/magazin")
 	if err != nil {
 		panic(err)
 	}
