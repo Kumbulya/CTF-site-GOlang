@@ -7,7 +7,6 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
-	"strconv"
 )
 
 type User struct {
@@ -43,11 +42,34 @@ func home(w http.ResponseWriter, r *http.Request) {
 }
 
 func account(w http.ResponseWriter, r *http.Request, db *sql.DB) {
-	id, _ := strconv.Atoi(r.URL.Query().Get("id"))
+	id := r.URL.Query().Get("id")
 
-	query := fmt.Sprintf("SELECT * FROM `users` WHERE `page` = '%d'", id)
+	query := fmt.Sprintf("SELECT COUNT(*) FROM `users` WHERE `page` = '%s'", id)
 
 	res, err := db.Query(query)
+	if err != nil {
+		http.Error(w, "Error executing query", http.StatusInternalServerError)
+		return
+	}
+	defer res.Close()
+
+	var count int
+	for res.Next() {
+		err := res.Scan(&count)
+		if err != nil {
+			http.Error(w, "Error scanning result", http.StatusInternalServerError)
+			return
+		}
+	}
+
+	if count != 1 {
+		w.Write([]byte("Такого аккаунта нет"))
+		return
+	}
+
+	query = fmt.Sprintf("SELECT * FROM `users` WHERE `page` = '%s'", id)
+
+	res, err = db.Query(query)
 	if err != nil {
 		http.Redirect(w, r, "/sign_in", http.StatusMovedPermanently)
 	}
@@ -69,10 +91,6 @@ func account(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		"html/tmpl/footer.partial.html",
 	}
 
-	if err != nil || id < 1 {
-		http.NotFound(w, r)
-		return
-	}
 	templ, err := template.ParseFiles(files...)
 	if err != nil {
 		log.Println(err.Error())
@@ -91,9 +109,30 @@ func sign_up(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	if r.Method == http.MethodPost {
 		login_up := r.FormValue("login")
 		pass_up := r.FormValue("pass")
-		query := fmt.Sprintf("SELECT `login`,`password`,`page` FROM `users` WHERE `login` = '%s' AND `password` = '%s'", login_up, pass_up)
-
+		query := fmt.Sprintf("SELECT COUNT(*) FROM `users` WHERE `login` = '%s' ", login_up)
 		res, err := db.Query(query)
+		if err != nil {
+			http.Error(w, "Error executing query", http.StatusInternalServerError)
+			return
+		}
+		defer res.Close()
+
+		var count int
+		for res.Next() {
+			err := res.Scan(&count)
+			if err != nil {
+				http.Error(w, "Error scanning result", http.StatusInternalServerError)
+				return
+			}
+		}
+
+		if count != 1 {
+			http.Redirect(w, r, "/sign_in", http.StatusMovedPermanently)
+			return
+		}
+		query = fmt.Sprintf("SELECT `login`,`password`,`page` FROM `users` WHERE `login` = '%s' AND `password` = '%s'", login_up, pass_up)
+
+		res, err = db.Query(query)
 		if err != nil {
 			http.Redirect(w, r, "/sign_in", http.StatusMovedPermanently)
 		}
