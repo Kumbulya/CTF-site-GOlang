@@ -1,0 +1,21 @@
+{{template "base" .}}
+
+{{define "title"}}Главная страница{{end}}
+
+{{define "main"}}
+<div align = "center">
+    <p>
+        <a href="/sign_up">Войти</a>
+    </p>
+    <form>
+        <input type = "search" name = "poisk" placeholder="Поиск по сайту">
+        <input type="submit" value = "Найти">
+    </form>
+</div>
+{{end}}
+<!--
+<body align = "center">
+    <h1 >Каталог</h1>
+    
+</body>
+--> 
