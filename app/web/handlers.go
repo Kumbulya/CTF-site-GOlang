@@ -7,7 +7,6 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
-	"strconv"
 )
 
 type User struct {
@@ -43,9 +42,9 @@ func home(w http.ResponseWriter, r *http.Request) {
 }
 
 func account(w http.ResponseWriter, r *http.Request, db *sql.DB) {
-	id, _ := strconv.Atoi(r.URL.Query().Get("id"))
+	id := r.URL.Query().Get("id")
 
-	query := fmt.Sprintf("SELECT * FROM `users` WHERE `page` = '%d'", id)
+	query := fmt.Sprintf("SELECT * FROM `users` WHERE `page` = '%s'", id)
 
 	res, err := db.Query(query)
 	if err != nil {
@@ -69,10 +68,6 @@ func account(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		"html/tmpl/footer.partial.html",
 	}
 
-	if err != nil || id < 1 {
-		http.NotFound(w, r)
-		return
-	}
 	templ, err := template.ParseFiles(files...)
 	if err != nil {
 		log.Println(err.Error())

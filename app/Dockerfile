@@ -9,10 +9,10 @@ COPY . .
 # Build your Go application
 RUN go mod download
 
-RUN go build main.go
+RUN go build -o application ./web 
 
 # Expose port 1337
 EXPOSE 1337
 
 # Run the command to start your application
-CMD ["./main"]
+CMD ["./application"]

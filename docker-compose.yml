@@ -17,7 +17,7 @@ services:
 
   
   web:
-   build: ./go
+   build: ./app
    ports:
     - "1337:1337"
 
