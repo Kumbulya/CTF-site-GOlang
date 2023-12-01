@@ -12,10 +12,17 @@
         <input type="submit" value = "Найти">
     </form>
 </div>
+<div>
+    <h1>Products</h1>
+    <ul>
+        {{range .}}
+        <li>
+            <p><img src = "static/img/product_{{.Id}}.jpg" width="200" height="200"></p>
+            <p>Название: {{.Product_name}}</p>
+            <p>Продавец: <a href = "/account?id={{.Seller}}">{{.Seller_name}}</a></p>
+        </li>
+        {{end}}
+    </ul>
+</div>
+
 {{end}}
-<!--
-<body align = "center">
-    <h1 >Каталог</h1>
-    
-</body>
---> 

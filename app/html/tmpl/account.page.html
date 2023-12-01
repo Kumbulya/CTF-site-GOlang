@@ -5,6 +5,30 @@
  
 {{define "main"}}
 <p>Аккаунт: {{.Login}}</p>
-<p> ID в бд: {{.Id}}</p>
-<p> Пароль: {{.Password}}</p>
+<p>
+    {{if .Avatar }}
+        <img src = static/img/account_{{.Page}}.jpg width="150" height="150">
+    {{else}}
+        <img src =static/img/default_avatar.jpg width="150" height="150">
+    {{end}}
+</p>
+<p>
+    <form enctype="multipart/form-data" action="/upload" method="post">
+        <input type="hidden" name="page" value="{{.Page}}">
+        <input type="file" name="account_avatar" />
+        <input type="submit" value="Загрузить" />
+    </form>
+</p>
+<p>Продать товар</p>
+<p>
+    <form action="/upload_product" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="user" value="{{.Page}}">
+        <input type="file" name="product_avatar">
+        <p><input type = "text" name = "product_name" value = "Введите название"></p>
+        <p><input type="text" name = "product_category" value = "Введите категорию"></p>
+        <p><input type="text" name = "product_description" value = "Введите описание"></p>
+        <input type="submit" value="Выставить на продажу">
+    </form>
+</p>
 {{end}}
+
