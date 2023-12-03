@@ -6,7 +6,18 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
+	"time"
 )
+
+func setCookie(w http.ResponseWriter, name string, value string) {
+	expire := time.Now().AddDate(0, 0, 1)
+	cookie := http.Cookie{
+		Name:    name,
+		Value:   value,
+		Expires: expire,
+	}
+	http.SetCookie(w, &cookie)
+}
 
 func sign_up(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	if r.Method == http.MethodPost {
@@ -42,6 +53,7 @@ func sign_up(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		}
 
 		defer insert.Close()
+		setCookie(w, "session", login_in)
 		http.Redirect(w, r, "/sign_up", http.StatusMovedPermanently)
 
 	} else if r.Method == http.MethodGet {
@@ -95,6 +107,7 @@ func sign_in(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 				continue
 			}
 		}
+		setCookie(w, "session", login_up)
 		http.Redirect(w, r, "/account?id="+user.Page, http.StatusMovedPermanently)
 
 	} else if r.Method == http.MethodGet {

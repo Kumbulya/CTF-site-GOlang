@@ -1,0 +1,12 @@
+{{template "base" .}}
+
+{{define "title"}}Главная страница{{end}}
+
+{{define "main"}}
+    <h1>{{.Product_name}}<h1>
+    <p><img src = "static/img/product_{{.Id}}.jpg" height="500" width="500"></p>
+    <p>Продавец: <a href = "/account?id={{.Seller}}">{{.Seller_name}}</a></p>
+    <p>Категория: {{.Category}}</p>
+    <p>Описание: {{.Description}}</p>
+
+{{end}}

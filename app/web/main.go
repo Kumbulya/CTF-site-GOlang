@@ -31,6 +31,10 @@ func main() {
 		account(w, r, db)
 	})
 
+	mux.HandleFunc("/product", func(w http.ResponseWriter, r *http.Request) {
+		product(w, r, db)
+	})
+
 	mux.HandleFunc("/upload", func(w http.ResponseWriter, r *http.Request) {
 		upload(w, r)
 	})

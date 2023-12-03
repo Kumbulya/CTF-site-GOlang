@@ -17,6 +17,7 @@ type User struct {
 	Password string
 	Page     string
 	Avatar   bool
+	Own      bool
 }
 
 type Product struct {
@@ -26,6 +27,14 @@ type Product struct {
 	Seller       string
 	Seller_name  string
 	Description  string
+}
+
+func getCookie(r *http.Request, name string) (*http.Cookie, error) {
+	cookie, err := r.Cookie(name)
+	if err != nil {
+		return nil, err
+	}
+	return cookie, nil
 }
 
 func home(w http.ResponseWriter, r *http.Request, db *sql.DB) {
@@ -115,6 +124,19 @@ func account(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		}
 	}
 
+	cookie, _ := getCookie(r, "session")
+
+	if cookie.Value != user.Login {
+		user.Own = false
+	} else {
+		user.Own = true
+	}
+
+	if err != nil {
+
+		http.Redirect(w, r, "/sign_in", http.StatusSeeOther)
+		return
+	}
 	user.Avatar = true
 	if _, err := os.Stat("html/static/img/account_" + user.Page + ".jpg"); os.IsNotExist(err) {
 		user.Avatar = false
@@ -218,4 +240,41 @@ func upload_product(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	}
 
 	http.Redirect(w, r, "/account?id="+user, http.StatusMovedPermanently)
+}
+
+func product(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	id := r.URL.Query().Get("id")
+	query := fmt.Sprintf("SELECT katalog.id, katalog.product_name, katalog.category, katalog.seller, katalog.description, users.login FROM katalog INNER JOIN users ON katalog.seller = users.page WHERE katalog.id = '%s'", id)
+	res, err := db.Query(query)
+	if err != nil {
+		http.Redirect(w, r, "/sign_in", http.StatusMovedPermanently)
+	}
+	var product Product
+
+	for res.Next() {
+		err := res.Scan(&product.Id, &product.Product_name, &product.Category, &product.Seller, &product.Description, &product.Seller_name)
+		if err != nil {
+			http.Error(w, "Error scanning result", http.StatusInternalServerError)
+			return
+		}
+	}
+
+	files := []string{
+		"html/tmpl/product.page.html",
+		"html/tmpl/base.layout.html",
+		"html/tmpl/footer.partial.html",
+	}
+
+	templ, err := template.ParseFiles(files...)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, "Internal Server Error", 500)
+		return
+	}
+
+	err = templ.Execute(w, product)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, "Internal Server Error", 500)
+	}
 }

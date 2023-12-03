@@ -17,7 +17,7 @@
     <ul>
         {{range .}}
         <li>
-            <p><img src = "static/img/product_{{.Id}}.jpg" width="200" height="200"></p>
+            <p><a href="/product?id={{.Id}}"><img src = "static/img/product_{{.Id}}.jpg" width="200" height="200"></a></p>
             <p>Название: {{.Product_name}}</p>
             <p>Продавец: <a href = "/account?id={{.Seller}}">{{.Seller_name}}</a></p>
         </li>
