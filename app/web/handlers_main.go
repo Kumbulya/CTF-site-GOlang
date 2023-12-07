@@ -278,3 +278,44 @@ func product(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		http.Error(w, "Internal Server Error", 500)
 	}
 }
+
+func search(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	q := r.URL.Query().Get("q")
+
+	query := fmt.Sprintf("SELECT katalog.id, katalog.product_name, katalog.category, katalog.seller, katalog.description, users.login FROM katalog INNER JOIN users ON katalog.seller = users.page WHERE katalog.product_name LIKE '%%%s%%'", q)
+	rows, err := db.Query(query)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+	var products []Product
+	for rows.Next() {
+		var p Product
+		if err := rows.Scan(&p.Id, &p.Product_name, &p.Category, &p.Seller, &p.Description, &p.Seller_name); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		products = append(products, p)
+	}
+
+	files := []string{
+		"html/tmpl/home.page.html",
+		"html/tmpl/base.layout.html",
+		"html/tmpl/footer.partial.html",
+	}
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, "Internal Server Error", 500)
+		return
+	}
+
+	err = ts.Execute(w, products)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, "Internal Server Error", 500)
+	}
+
+}

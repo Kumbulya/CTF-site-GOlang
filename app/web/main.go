@@ -35,6 +35,10 @@ func main() {
 		product(w, r, db)
 	})
 
+	mux.HandleFunc("/search", func(w http.ResponseWriter, r *http.Request) {
+		search(w, r, db)
+	})
+
 	mux.HandleFunc("/upload", func(w http.ResponseWriter, r *http.Request) {
 		upload(w, r)
 	})
