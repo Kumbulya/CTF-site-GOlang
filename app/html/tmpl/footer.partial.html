@@ -1,3 +1,29 @@
 {{define "footer"}}
-<footer>Как он свою маму <strong>Golang</strong></footer>
+<style>
+    body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+    }
+
+    .main-content {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+    }
+
+    .footer {
+        text-align: center;
+        padding: 10px;
+        background-color: rgba(255, 191, 0, 0.8);
+        color: black;
+        width: 100%;
+        box-sizing: border-box;
+        margin-top: auto;
+        flex-shrink: 0;
+    }
+</style>
+<footer class = "footer"><strong>CTF</strong></footer>
 {{end}}

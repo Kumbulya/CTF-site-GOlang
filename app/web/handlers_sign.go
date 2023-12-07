@@ -41,7 +41,7 @@ func sign_up(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		}
 
 		if count > 0 {
-
+			w.Write([]byte("Такой аккаунт уже есть!"))
 			return
 		}
 
