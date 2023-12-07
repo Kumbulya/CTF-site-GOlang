@@ -1,39 +1,185 @@
 
-{{template "base" .}}
-{{define "title"}} Аккаунт{{end}}
-{{define "main"}}
-    <div class="section">
-    <p>Аккаунт: {{.Login}}</p>
-    <p>
-        {{if .Avatar }}
-            <img src = static/img/account_{{.Page}}.jpg width="150" height="150">
-        {{else}}
-            <img src =static/img/default_avatar.jpg width="150" height="150">
-        <p>Информация о пользователе: </p>
+
+<head>
+    <style>
+
+        input {outline:none;}
+
+        body {
+            background-image: url(../static/img/a-black-background-with-a-glowing-entrance-to-a-club_891301-2269\.png);
+            text-align: center;
+        }
+
+        .section-name,.section-file {
+            width: 500px;
+            padding: 30px;
+            margin: 50px;
+            margin-top: 30px;
+            transition: box-shadow 0.3s ease;
+            border-radius: 15px;
+            background-color: rgba(255, 191, 0, 0.8);
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .section-name:hover{
+            box-shadow: 0 0 35px rgb(255, 191, 0);
+        }
+        .section-file:hover{
+            box-shadow: 0 0 35px rgb(255, 191, 0);
+        }
+
+        .sections-container {
+            justify-content: space-around;
+        }
+    
+        input[type="text"],
+        input[type="file"]{
+    
+            font-size: 16px;
+            width: 300px;
+            font-family: "FRAHV", sans-serif;
+            background-color: rgba(253, 208, 72, 0.8);
+            border: 2px solid black;
+            transition: background-color 0.3s ease;
+            padding: 15px;
+            border-radius: 15px;
+            margin-top: 5px;
+        }
+        input[type="file"]:hover {
+            background-color: rgba(181, 146, 43, 0.8);
+        }
+        input[type="text"]:focus{
+            border: 2px solid black;
+        }
+        input[type="file"]:focus{
+            border: 2px solid black;
+        }
+        input[type="text"]:not(:placeholder-shown){
+            background-color: rgba(181, 146, 43, 0.8);
+        }
+        input[type="text"]:hover {
+            background-color: rgba(181, 146, 43, 0.8);
+        }
+
+        .main {
+            display:inline-block;
+            width: 350px;
+            margin-top: 15px;
+            border-radius: 15px;
+            background-color: rgba(255, 191, 0, 0.8);
+            transition: box-shadow 0.3s ease;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .main:hover{
+            box-shadow: 0 0 35px rgb(255, 191, 0);
+        }
+
+        .upload{
+
+            width: 300px;
+            margin-top: 15px;
+
+        }
+    
+        input[type="submit"] {
+    
+            font-family: "FRAHV", sans-serif;
+            color: rgb(80, 80, 80);
+            background-color: rgba(253, 208, 72, 0.8);
+            border: 2px solid black;
+            padding: 15px;
+            font-size: 24px;
+            border-radius: 15px;
+            transition: background-color 0.3s ease;
+    
+        }
+        input[type="submit"]:hover {
+            background-color: rgba(181, 146, 43, 0.8);
+        }
+    
+        p {
+    
+            font-size: 10px;
+    
+        }
+
+        a{
+            color:black;
+            display: block;
+            text-decoration: none;
+        }
+
+        h1{
+
+            word-wrap: break-word;
+
+        }
+    
+        img {
+            border: 1px solid white;
+            border-radius: 5px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+    </style>
+    {{template "base" .}}
+    {{define "title"}} Аккаунт{{end}}
+    {{define "main"}}
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+</head>
+<body>
+    <div class="main">
+        <h1><a href='/'>Каталог</a></h1>
+    </div>
+    <div class="sections-container">
+        <div class="section-name">
+            <h1>Аккаунт: {{.Login}}</h1>
+            <p>
+                {{if .Avatar }}
+                    <img src = static/img/account_{{.Page}}.jpg width="150" height="150">
+                {{else}}
+                    <img src =static/img/default_avatar.jpg width="150" height="150">
+                {{end}}
+                {{if.Own}}
+                <p>
+                    <form enctype="multipart/form-data" action="/upload" method="post">
+                        <input type="hidden" name="page" value="{{.Page}}">
+                        <input type="file" name="account_avatar" />
+                        <input class="upload" type="submit" value="Загрузить" />
+                    </form>
+                </p>
+                {{else}}
+                <h1>Информация о пользователе: </h1>
+                {{end}}
+            </p>
+        </div>
+        {{if .Own}}
+        <div class="section-file">
+            <h1>Продать товар</h1>
+            <p>
+                <form action="/upload_product" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="user" value="{{.Page}}">
+                    <input type="file" name="product_avatar">
+                    <p><input type = "text" name = "product_name" placeholder = "Введите название"></p>
+                    <p><input type="text" name = "product_category" placeholder = "Введите категорию"></p>
+                    <p><input type="text" name = "product_description" placeholder = "Введите описание"></p>
+                    <input class="upload" type="submit" value="Выставить на продажу">
+                </form>
+            </p>
         {{end}}
-    </p>
+        </div>
     </div>
-    <div class="form-section">
-    {{if .Own}}
-        <p>
-            <form enctype="multipart/form-data" action="/upload" method="post">
-                <input type="hidden" name="page" value="{{.Page}}">
-                <input type="file" name="account_avatar" />
-                <input type="submit" value="Загрузить" />
-            </form>
-        </p>
-        <p>Продать товар</p>
-        <p>
-            <form action="/upload_product" method="post" enctype="multipart/form-data">
-                <input type="hidden" name="user" value="{{.Page}}">
-                <input type="file" name="product_avatar">
-                <p><input type = "text" name = "product_name" placeholder = "Введите название"></p>
-                <p><input type="text" name = "product_category" placeholder = "Введите категорию"></p>
-                <p><input type="text" name = "product_description" placeholder = "Введите описание"></p>
-                <input type="submit" value="Выставить на продажу">
-            </form>
-        </p>
-    {{end}}
-    </div>
+
+</body>
+</html>
 
 {{end}}

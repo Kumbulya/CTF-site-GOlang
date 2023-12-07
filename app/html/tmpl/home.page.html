@@ -1,28 +1,158 @@
-{{template "base" .}}
+<head>
+    <style>
 
-{{define "title"}}Главная страница{{end}}
+        input {outline:none;}
 
-{{define "main"}}
-<div align = "center">
+        .section {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .section-search {
+            width: 350px;
+            padding: 30px;
+            margin: 20px;
+            transition: box-shadow 0.3s ease;
+            border-radius: 15px;
+            background-color: rgba(255, 191, 0, 0.8);
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .section-search:hover{
+            box-shadow: 0 0 35px rgb(255, 191, 0);
+        }
+
+
+        .product {
+            width: 300px;
+            padding: 15px;
+            margin: 15px;
+            border-radius: 15px;
+            background-color: rgba(255, 191, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: box-shadow 0.3s ease;
+        }
+        .product:hover{
+
+            box-shadow: 0 0 35px rgb(255, 191, 0);
+
+        }
+
+        .product img {
+            border: 1px solid white;
+            box-shadow: 0 0 35px black;
+            border-radius: 5px;
+        }
+
+        p,h1{
+            
+            font-size: 24px;
+            word-wrap: break-word;
+
+        }
+
+        a{
+            color:black;
+            display: block;
+            text-decoration: none;
+        }
+
+        .enter{
+            display:inline-block;
+            width: 265px;
+            padding: 15px;
+            border-radius: 15px;
+            background-color: rgba(253, 208, 72, 0.8);
+            transition: background-color 0.3s ease;
+            border: 2px solid black;
+            font-size: 36px;
+            word-wrap: break-word;
+
+        }
+
+        .enter:hover{
+            background-color: rgba(181, 146, 43, 0.8);
+        }
+        
+        input[type="search"]{
+            
+            font-size: 16px;
+            width: 300px;
+            font-family: "FRAHV", sans-serif;
+            background-color: rgba(253, 208, 72, 0.8);
+            border: 2px solid black;
+            transition: background-color 0.3s ease;
+            padding: 15px;
+            border-radius: 15px;
+            margin-top: 10px;
+        }
+        input[type="search"]:hover {
+            background-color: rgba(181, 146, 43, 0.8);
+        }
+        input[type="search"]:focus{
+            border: 2px solid black;
+        }
+        input[type="search"]:not(:placeholder-shown){
+            background-color: rgba(181, 146, 43, 0.8);
+        }
+
+        input[type="submit"] {
+            font-size: 24px;
+            width: 300px;
+            font-family: "FRAHV", sans-serif;
+            background-color: rgba(253, 208, 72, 0.8);
+            border: 2px solid black;
+            margin-top: 30px;
+            padding: 15px;
+            border-radius: 15px;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: rgba(181, 146, 43, 0.8);
+        }
+
+        img {
+            border: 1px solid black;
+            border-radius: 15px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    </style>
+    {{template "base" .}}
+    {{define "title"}}Главная страница{{end}}
+    {{define "main"}}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<div class = "section-search">
     <p>
-        <a href="/sign_in">Войти</a>
+        <a class = "enter" href="/sign_up">Войти</a>
     </p>
     <form action="/search" method="GET">
-        <input type = "search" name = "q" placeholder="Поиск по сайту">
-        <input type="submit" value = "Найти">
+        <input type="search" name="q" placeholder="Поиск по сайту">
+        <input type="submit" value="Найти">
     </form>
 </div>
-<div>
-    <h1>Products</h1>
-    <ul>
-        {{range .}}
-        <li>
-            <p><a href="/product?id={{.Id}}"><img src = "static/img/product_{{.Id}}.jpg" width="200" height="200"></a></p>
-            <p>Название: {{.Product_name}}</p>
-            <p>Продавец: <a href = "/account?id={{.Seller}}">{{.Seller_name}}</a></p>
-        </li>
-        {{end}}
-    </ul>
-</div>
-
+    <div>
+        <h1>Products</h1>
+        <div class="section">
+            {{range .}}
+            <div class="product">
+                <p><a href="/product?id={{.Id}}"><img src="static/img/product_{{.Id}}.jpg" width="200" height="200"></a></p>
+                <p>Название: {{.Product_name}}</p>
+                <p>Продавец: <a href="/account?id={{.Seller}}">{{.Seller_name}}</a></p>
+            </div>
+            {{end}}
+        </div>
+    </div>
+</body>
 {{end}}

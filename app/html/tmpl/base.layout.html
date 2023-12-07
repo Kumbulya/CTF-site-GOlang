@@ -1,16 +1,32 @@
 {{define "base"}}
 <!DOCTYPE html>
+
+<style>
+
+
+    @font-face {
+            font-family: 'FRAHV';
+            src: url('../static/FRAHV.TTF') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+    }
+    body {
+        background: url(../static/img/1679609952_bogatyr-club-p-chernii-fon-s-belimi-tochkami-oboi-21.jpg);
+        color: black;
+        font-family: "FRAHV", sans-serif;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
+
 <html lang='en' charset='utf-8'>
     <head>
         <title> {{template "title" .}}</title>
-        <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
 
     <body>
-        <header align = "center">
-            <h1> <a href='/'>Каталог</a></h1>
-        </header>
         <main>
              {{template "main" .}}
         </main>
@@ -18,4 +34,3 @@
     </body>
 </html>
 {{end}}
-

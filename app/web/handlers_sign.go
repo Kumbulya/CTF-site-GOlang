@@ -41,7 +41,7 @@ func sign_up(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		}
 
 		if count > 0 {
-
+			w.Write([]byte("Такой аккаунт уже есть!"))
 			return
 		}
 
@@ -107,7 +107,7 @@ func sign_in(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 				continue
 			}
 		}
-		setCookie(w, "session", login_up)
+		setCookie(w, "session", user.Login)
 		http.Redirect(w, r, "/account?id="+user.Page, http.StatusMovedPermanently)
 
 	} else if r.Method == http.MethodGet {

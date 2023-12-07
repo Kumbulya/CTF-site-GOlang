@@ -1,12 +1,130 @@
+<head>
+    <style>
+
+        .section-name {
+            width: 785px;
+            padding: 30px;
+            margin: 50px;
+            margin-top: 30px;
+            transition: box-shadow 0.3s ease;
+            border-radius: 15px;
+            background-color: rgba(255, 191, 0, 0.8);
+            display: inline-block;
+            vertical-align:top;
+            text-align: center;
+        }
+        .section-name:hover{
+            box-shadow: 0 0 35px rgb(255, 191, 0);
+        }
+
+        .section-file {
+            width: 700px;
+            padding: 30px;
+            display: inline-block;
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .main {
+            width: 350px;
+            margin-top: 15px;
+            border-radius: 15px;
+            background-color: rgba(255, 191, 0, 0.8);
+            transition: box-shadow 0.3s ease;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .main:hover{
+            box-shadow: 0 0 35px rgb(255, 191, 0);
+        }
+        input[type="search"]{
+            
+            font-size: 16px;
+            width: 350px;
+            font-family: "FRAHV", sans-serif;
+            background-color: rgba(253, 208, 72, 0.8);
+            border: 2px solid black;
+            transition: background-color 0.3s ease;
+            padding: 15px;
+            border-radius: 15px;
+            margin-top: 10px;
+        }
+
+        input[type="search"]:hover {
+            background-color: rgba(181, 146, 43, 0.8);
+        }
+
+    
+        input[type="submit"] {
+            font-size: 24px;
+            width: 300px;
+            font-family: "FRAHV", sans-serif;
+            background-color: rgba(253, 208, 72, 0.8);
+            border: 2px solid black;
+            margin-top: 30px;
+            padding: 15px;
+            border-radius: 15px;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: rgba(181, 146, 43, 0.8);
+        }
+    
+        p {
+    
+            word-wrap: break-word;
+            font-size: 36px;
+    
+        }
+
+        a{
+            color:black;
+            display: block;
+            text-decoration: none;
+        }
+
+        h1{
+
+            word-wrap: break-word;
+
+        }
+    
+        img {
+            border: 1px solid black;
+            border-radius: 15px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    </style>
 {{template "base" .}}
 
 {{define "title"}}Главная страница{{end}}
 
 {{define "main"}}
-    <h1>{{.Product_name}}<h1>
-    <p><img src = "static/img/product_{{.Id}}.jpg" height="500" width="500"></p>
-    <p>Продавец: <a href = "/account?id={{.Seller}}">{{.Seller_name}}</a></p>
-    <p>Категория: {{.Category}}</p>
-    <p>Описание: {{.Description}}</p>
+</head>
+<div class = "main">
+    <h1><a href='/'>Каталог</a></h1>
+</div>
+<div>
+    <div class ="section-name">
+        <h1>{{.Product_name}}<h1>
+        <p><img src = "static/img/product_{{.Id}}.jpg" height="500" width="500"></p>
+        <p>Продавец: <a href = "/account?id={{.Seller}}">{{.Seller_name}}</a></p>
+        <p>Категория: {{.Category}}</p>
+        <p>Описание: {{.Description}}</p>
+    </div>
+    <div class = "section-name">
+        <h1>Комментарии</h1>
+        <div class = "section-file">
+            <input type="search" name="comment" placeholder="Ваш комментарий">
+            <input type="submit" value="Отправить">
+        </div>
+    </div>
+</div>
 
 {{end}}
