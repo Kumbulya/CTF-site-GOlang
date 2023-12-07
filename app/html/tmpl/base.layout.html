@@ -3,6 +3,103 @@
 <html lang='en' charset='utf-8'>
     <head>
         <title> {{template "title" .}}</title>
+        <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        @font-face {
+            font-family: 'FRAHV';
+            src: url('../static/FRAHV.TTF') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        body {
+            background-color: black;
+            color: black;
+            font-family: "FRAHV", sans-serif;
+            text-align: center;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        div {
+            width: 400px;
+            padding: 30px;
+            margin: 50px;
+            box-shadow: 0 0 35px yellow;
+            border-radius: 15px;
+        }
+
+        .section {
+            background-color: rgba(255, 255, 0, 0.8);
+            padding: 20px;
+            margin-bottom: 10px;
+            border-radius: 15px;
+        }
+
+        .form-section {
+            background-color: rgba(255, 255, 0, 0.8);
+            padding: 20px;
+            margin-bottom: 10px;
+            border-radius: 15px;
+        }
+
+        input[type="text"],
+        input[type="file"]{
+
+            font-size: 16px;
+            width: 300px;
+            font-family: "FRAHV", sans-serif;
+            background-color: white;
+            border: 1px solid white;
+            padding: 15px;
+            border-radius: 15px;
+            margin-top: 5px;
+        }
+
+        input[type="submit"] {
+
+            font-family: "FRAHV", sans-serif;
+            background-color: white;
+            color: rgb(80, 80, 80);
+            border: 1px solid white;
+            padding: 15px;
+            font-size: 24px;
+            border-radius: 15px;
+
+        }
+
+        .submit{
+
+            font-family: "FRAHV", sans-serif;
+            background-color: white;
+            color: rgb(80, 80, 80);
+            border: 1px solid white;
+            padding: 15px;
+            font-size: 24px;
+            border-radius: 15px;
+            margin-top: 15px;
+
+        }
+
+        input[type="file"] {
+            color: rgb(80, 80, 80);
+            margin-bottom: 10px;
+        }
+
+        p {
+
+            font-size: 10px;
+
+        }
+
+        img {
+            border: 1px solid white;
+            border-radius: 5px;
+        }
+    </style>
     </head>
 
     <body>
@@ -16,3 +113,4 @@
     </body>
 </html>
 {{end}}
+

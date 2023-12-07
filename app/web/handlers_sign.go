@@ -54,10 +54,10 @@ func sign_up(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 		defer insert.Close()
 		setCookie(w, "session", login_in)
-		http.Redirect(w, r, "/sign_up", http.StatusMovedPermanently)
+		http.Redirect(w, r, "/sign_in", http.StatusMovedPermanently)
 
 	} else if r.Method == http.MethodGet {
-		http.ServeFile(w, r, "html/tmpl/sign_in.html")
+		http.ServeFile(w, r, "html/tmpl/sign_up.html")
 	} else {
 
 		http.Error(w, "Метод запрещен!", http.StatusMethodNotAllowed)
@@ -88,14 +88,14 @@ func sign_in(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		}
 
 		if count != 1 {
-			http.Redirect(w, r, "/sign_in", http.StatusMovedPermanently)
+			http.Redirect(w, r, "/sign_up", http.StatusMovedPermanently)
 			return
 		}
 		query = fmt.Sprintf("SELECT `login`,`password`,`page` FROM `users` WHERE `login` = '%s' AND `password` = '%s'", login_up, pass_up)
 
 		res, err = db.Query(query)
 		if err != nil {
-			http.Redirect(w, r, "/sign_in", http.StatusMovedPermanently)
+			http.Redirect(w, r, "/sign_up", http.StatusMovedPermanently)
 		}
 		defer res.Close()
 
@@ -111,7 +111,7 @@ func sign_in(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		http.Redirect(w, r, "/account?id="+user.Page, http.StatusMovedPermanently)
 
 	} else if r.Method == http.MethodGet {
-		http.ServeFile(w, r, "html/tmpl/sign_up.html")
+		http.ServeFile(w, r, "html/tmpl/sign_in.html")
 	} else {
 
 		http.Error(w, "Метод запрещен!", http.StatusMethodNotAllowed)
