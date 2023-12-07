@@ -19,7 +19,7 @@ func main() {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		home(w, r)
+		home(w, r, db)
 	})
 	mux.HandleFunc("/sign_up", func(w http.ResponseWriter, r *http.Request) {
 		sign_up(w, r, db)
@@ -31,8 +31,24 @@ func main() {
 		account(w, r, db)
 	})
 
-	fileServer := http.FileServer(http.Dir("html/static/"))
-	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
+	mux.HandleFunc("/product", func(w http.ResponseWriter, r *http.Request) {
+		product(w, r, db)
+	})
+
+	mux.HandleFunc("/search", func(w http.ResponseWriter, r *http.Request) {
+		search(w, r, db)
+	})
+
+	mux.HandleFunc("/upload", func(w http.ResponseWriter, r *http.Request) {
+		upload(w, r)
+	})
+
+	mux.HandleFunc("/upload_product", func(w http.ResponseWriter, r *http.Request) {
+		upload_product(w, r, db)
+	})
+
+	fileServer := http.FileServer(http.Dir("html/static"))
+	mux.Handle("/static/", http.StripPrefix("/static/", fileServer))
 
 	http.ListenAndServe(":1337", mux)
 

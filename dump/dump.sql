@@ -9,5 +9,13 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`login`, `password`, `page`) VALUES ('admin','admin','1');
 
-
+CREATE TABLE `katalog`(
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `product_name` varchar(50) NOT NULL,
+    `category` varchar(50) NOT NULL,
+    `seller` varchar(50) NOT NULL,
+    `description` varchar(50) NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY (`id`)
+)   AUTO_INCREMENT = 1 ;
 

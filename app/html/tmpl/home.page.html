@@ -7,15 +7,22 @@
     <p>
         <a href="/sign_up">Войти</a>
     </p>
-    <form>
-        <input type = "search" name = "poisk" placeholder="Поиск по сайту">
+    <form action="/search" method="GET">
+        <input type = "search" name = "q" placeholder="Поиск по сайту">
         <input type="submit" value = "Найти">
     </form>
 </div>
+<div>
+    <h1>Products</h1>
+    <ul>
+        {{range .}}
+        <li>
+            <p><a href="/product?id={{.Id}}"><img src = "static/img/product_{{.Id}}.jpg" width="200" height="200"></a></p>
+            <p>Название: {{.Product_name}}</p>
+            <p>Продавец: <a href = "/account?id={{.Seller}}">{{.Seller_name}}</a></p>
+        </li>
+        {{end}}
+    </ul>
+</div>
+
 {{end}}
-<!--
-<body align = "center">
-    <h1 >Каталог</h1>
-    
-</body>
---> 
