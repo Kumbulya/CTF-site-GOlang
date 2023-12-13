@@ -46,7 +46,7 @@ func sign_up(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		}
 
 		page := rand.Intn(100000)
-		query = fmt.Sprintf("INSERT INTO `users` (`login`, `password`, `page`) VALUES ('%s','%s','%d')", login_in, pass_in, page)
+		query = fmt.Sprintf("INSERT INTO `users` (`login`, `password`, `page`, `isAdmin`, `balance`) VALUES ('%s','%s','%d',0,0)", login_in, pass_in, page)
 		insert, err := db.Query(query)
 		if err != nil {
 			log.Println(err)
@@ -91,7 +91,7 @@ func sign_in(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 			http.Redirect(w, r, "/sign_up", http.StatusMovedPermanently)
 			return
 		}
-		query = fmt.Sprintf("SELECT `login`,`password`,`page` FROM `users` WHERE `login` = '%s' AND `password` = '%s'", login_up, pass_up)
+		query = fmt.Sprintf("SELECT `login`,`password`,`page`,`isAdmin` FROM `users` WHERE `login` = '%s' AND `password` = '%s'", login_up, pass_up)
 
 		res, err = db.Query(query)
 		if err != nil {
@@ -101,7 +101,7 @@ func sign_in(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 		user := User{}
 		for res.Next() {
-			err := res.Scan(&user.Login, &user.Password, &user.Page)
+			err := res.Scan(&user.Login, &user.Password, &user.Page, &user.IsAdmin)
 			if err != nil {
 				fmt.Println(err)
 				continue
