@@ -143,6 +143,12 @@
     <div class="sections-container">
         <div class="section-name">
             <h1>Аккаунт: {{.Login}}</h1>
+            {{if.Own}}
+                <h1>Баланс: {{.Balance}}</h1>
+                <form action="/basket?id={{.Page}}" method="post">
+                    <input class="upload" type="submit" value="Корзина">
+                </form>
+            {{end}}
             <p>
                 {{if .Avatar }}
                     <img src = static/img/account_{{.Page}}.jpg width="150" height="150">
@@ -157,26 +163,34 @@
                         <input class="upload" type="submit" value="Загрузить" />
                     </form>
                 </p>
-                {{else}}
-                <h1>Информация о пользователе: </h1>
                 {{end}}
             </p>
         </div>
         {{if .Own}}
-        <div class="section-file">
-            <h1>Продать товар</h1>
-            <p>
-                <form action="/upload_product" method="post" enctype="multipart/form-data">
-                    <input type="hidden" name="user" value="{{.Page}}">
-                    <input type="file" name="product_avatar">
-                    <p><input type = "text" name = "product_name" placeholder = "Введите название"></p>
-                    <p><input type="text" name = "product_category" placeholder = "Введите категорию"></p>
-                    <p><input type="text" name = "product_description" placeholder = "Введите описание"></p>
-                    <input class="upload" type="submit" value="Выставить на продажу">
-                </form>
-            </p>
+            <div class="section-file">
+                <h1>Продать товар</h1>
+                <p>
+                    <form action="/upload_product" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="user" value="{{.Page}}">
+                        <p><input type="file" name="product_avatar"> Загрузите фотографию</p>  
+                        <p><input type="file" name="product_self"> Загрузите товар</p>
+                        <p><input type = "text" name = "product_name" placeholder = "Введите название"></p>
+                        <p><input type="text" name = "product_category" placeholder = "Введите категорию"></p>
+                        <p><input type="text" name = "product_description" placeholder = "Введите описание"></p>
+                        <p><input type="text" name = "product_cost" placeholder = "Введите стоимость"></p>
+                        <input class="upload" type="submit" value="Выставить на продажу">
+                    </form>
+                </p>
+            </div>
+            {{if .IsAdmin}}
+                <div class="section-name">
+                    <form action="/admin_panel" method="post">
+                        <input class="upload" type="submit" value="Панель админа">
+                    </form>
+                </div>
+            {{end}}
         {{end}}
-        </div>
+        
     </div>
 
 </body>

@@ -1,4 +1,3 @@
-
 <head>
     <style>
 
@@ -102,9 +101,11 @@
             align-items: center;
         }
     </style>
-    {{template "base" .}}
-    {{define "title"}}Главная страница{{end}}
-    {{define "main"}}
+{{template "base" .}}
+
+{{define "title"}}Главная страница{{end}}
+
+{{define "main"}}
 </head>
 <div class = "main">
     <h1><a href='/'>Каталог</a></h1>
@@ -116,6 +117,13 @@
         <p>Продавец: <a href = "/account?id={{.Seller}}">{{.Seller_name}}</a></p>
         <p>Категория: {{.Category}}</p>
         <p>Описание: {{.Description}}</p>
+        <p>Цена: {{.Cost}}₿</p>
+        <p>
+            <form action="/add_to_basket" method="post">
+                <input type="hidden" name="product_id" value="{{.Id}}">
+                <input type="submit" value="Добавить в корзину">
+            </form>
+        </p>
     </div>
     <div class = "section-name">
         <h1>Комментарии</h1>
@@ -125,4 +133,5 @@
         </div>
     </div>
 </div>
+
 {{end}}
