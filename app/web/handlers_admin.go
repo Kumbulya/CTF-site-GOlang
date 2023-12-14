@@ -9,11 +9,6 @@ import (
 	"strconv"
 )
 
-type UserWithAdmin struct {
-	User
-	MainIsAdmin int
-}
-
 func admin_panel(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	cookie, _ := getCookie(r, "session")
 	if cookie.Value == "admin" {
@@ -52,7 +47,7 @@ func admin_panel(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 			http.Error(w, "Internal Server Error", 500)
 		}
 	} else {
-		w.Write([]byte("Слава России!"))
+		w.Write([]byte("Недостаточно прав!"))
 	}
 
 }
@@ -73,8 +68,6 @@ func balance_change(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 	if rowsAffected > 0 {
 		http.Redirect(w, r, "/admin_panel", http.StatusFound)
-	} else {
-		w.Write([]byte("А чому не державною?"))
 	}
 
 }

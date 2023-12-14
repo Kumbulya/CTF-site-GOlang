@@ -23,7 +23,7 @@ func upload(w http.ResponseWriter, r *http.Request) {
 	dst, err := os.Create("html/static/img/account_" + page + ".jpg")
 
 	if err != nil {
-		log.Println("Pizda rulu")
+		log.Println("Ошибочка вышла(((")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

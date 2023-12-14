@@ -4,103 +4,138 @@
     <style>
 
         input {outline:none;}
-
-        @font-face {
-            font-family: 'FRAHV';
-            src: url('../static/FRAHV.TTF') format('truetype');
-            font-weight: normal;
-            font-style: normal;
-        }
-
-        body {
-            background-image: url(../static/img/1679609952_bogatyr-club-p-chernii-fon-s-belimi-tochkami-oboi-21.jpg);
-            font-family: 'FRAHV', sans-serif;
-            margin: 0;
+        
+        .section {
             display: flex;
-            justify-content: center;
+            flex-wrap: wrap;
+            justify-content: space-around;
         }
 
-        div {
-            text-align: center;
-            border-radius: 15px;
-            width: 400px;
-            background-color: rgba(255, 191, 0, 0.8);;
+        .section-main {
+            width: 350px;
             padding: 30px;
-            margin: 50px;
+            margin: 20px;
+            transition: box-shadow 0.3s ease;
+            border-radius: 15px;
+            background-color: rgba(255, 191, 0, 0.8);
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .section-main:hover{
             box-shadow: 0 0 35px rgb(255, 191, 0);
         }
 
-        h1 {
-            font-size: 36px;
-            color: black;
+
+        .product {
+            width: 300px;
+            padding: 15px;
+            margin: 15px;
+            border-radius: 15px;
+            background-color: rgba(255, 191, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: box-shadow 0.3s ease;
+        }
+        .product:hover{
+
+            box-shadow: 0 0 35px rgb(255, 191, 0);
+
         }
 
-        a {
-            font-family: "FRAHV", sans-serif;
+        .product img {
+            border: 1px solid white;
+            box-shadow: 0 0 35px black;
+            border-radius: 5px;
+        }
+
+        p,h1{
+            
+            font-size: 24px;
+            word-wrap: break-word;
+
+        }
+
+        a{
+            color:black;
             display: block;
-            font-size: 20px;
-            color: black;
-            margin: 15px 0;
+            font-size: 32px;
         }
 
-        form {
-            margin-top: 20px;
+        .enter{
+            display:inline-block;
+            width: 265px;
+            padding: 15px;
+            border-radius: 15px;
+            background-color: rgba(253, 208, 72, 0.8);
+            transition: background-color 0.3s ease;
+            border: 2px solid black;
+            font-size: 36px;
+            word-wrap: break-word;
+
         }
 
-        input {
+        .enter:hover{
+            background-color: rgba(181, 146, 43, 0.8);
+        }
+
+        input[type="search"]{
+            
             font-size: 16px;
             width: 300px;
             font-family: "FRAHV", sans-serif;
             background-color: rgba(253, 208, 72, 0.8);
-            transition: background-color 0.3s ease;
             border: 2px solid black;
+            transition: background-color 0.3s ease;
             padding: 15px;
             border-radius: 15px;
-            margin-top: 5px;
+            margin-top: 10px;
         }
-        input:hover{
+        input[type="search"]:hover {
             background-color: rgba(181, 146, 43, 0.8);
         }
-        input:focus{
+        input[type="search"]:focus{
             border: 2px solid black;
         }
-        input:not(:placeholder-shown){
+        input[type="search"]:not(:placeholder-shown){
             background-color: rgba(181, 146, 43, 0.8);
         }
-
 
         input[type="submit"] {
+            font-size: 24px;
+            width: 300px;
             font-family: "FRAHV", sans-serif;
             background-color: rgba(253, 208, 72, 0.8);
-            transition: background-color 0.3s ease;
-            color: rgb(80, 80, 80);
             border: 2px solid black;
+            margin-top: 30px;
             padding: 15px;
-            font-size: 24px;
             border-radius: 15px;
-            margin-top: 8%;
+            transition: background-color 0.3s ease;
         }
-        input[type="submit"]:hover{
+
+        input[type="submit"]:hover {
             background-color: rgba(181, 146, 43, 0.8);
         }
-    </style>
-</head>
-{{define "title"}}Корзина{{end}}
 
-{{define "main"}}
-<div class="product">
+        img {
+            border: 1px solid black;
+            border-radius: 15px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    </style>
+    {{define "title"}}Корзина{{end}}
+    {{define "main"}}
+</head>
+<body>
+<div class="section-main">
     <h1><a href='/'>Каталог</a></h1>
     <h1>Корзина</h1>
     <h1>{{.Login}}</h1>
-</div>
-{{range .Products}}
-    <div class="product">
-        <p><img src="static/img/product_{{.Id}}.jpg" width="200" height="200"></a></p>
-        <p>Название: {{.Product_name}}</p>
-        <p>Цена: {{.Cost}}₿</p>
-    </div>
-{{end}}
-<div class="product">
     <p>Общая цена: {{.TotalCost}}₿</p>
     <form action="/clear" method="post">
         <input type="hidden" name= "login" value="{{.Login}}">
@@ -112,4 +147,16 @@
         <input type="submit" value="Купить" >
     </form>
 </div>
+<div>
+    <div class = "section">
+        {{range .Products}}
+            <div class="product">
+                <p><img src="static/img/product_{{.Id}}.jpg" width="200" height="200"></a></p>
+                <p>Название: {{.Product_name}}</p>
+                <p>Цена: {{.Cost}}₿</p>
+            </div>
+        {{end}}
+    </div>
+</div>
+</body>
 {{end}}

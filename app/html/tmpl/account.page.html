@@ -100,7 +100,7 @@
     
         p {
     
-            font-size: 10px;
+            font-size: 18px;
     
         }
 
@@ -172,8 +172,10 @@
                 <p>
                     <form action="/upload_product" method="post" enctype="multipart/form-data">
                         <input type="hidden" name="user" value="{{.Page}}">
-                        <p><input type="file" name="product_avatar"> Загрузите фотографию</p>  
-                        <p><input type="file" name="product_self"> Загрузите товар</p>
+                        <p>Загрузите фотографию</p>
+                        <input type="file" name="product_avatar">
+                        <p>Загрузите товар</p>
+                        <input type="file" name="product_self">
                         <p><input type = "text" name = "product_name" placeholder = "Введите название"></p>
                         <p><input type="text" name = "product_category" placeholder = "Введите категорию"></p>
                         <p><input type="text" name = "product_description" placeholder = "Введите описание"></p>
