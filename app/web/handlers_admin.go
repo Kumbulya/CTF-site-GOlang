@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -55,7 +54,7 @@ func admin_panel(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 func balance_change(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	login := r.URL.Query().Get("login")
 	balance, _ := strconv.ParseFloat(r.FormValue("account_balance"), 32)
-	query := fmt.Sprintf("UPDATE `users` SET `balance` = ? WHERE `login` = ?")
+	query := "UPDATE `users` SET `balance` = ? WHERE `login` = ?"
 	update, err := db.Exec(query, balance, login)
 	if err != nil {
 		log.Println(err)

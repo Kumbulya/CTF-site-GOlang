@@ -84,9 +84,9 @@ func home(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 func account(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	id := r.URL.Query().Get("id")
 
-	query := fmt.Sprintf("SELECT COUNT(*) FROM `users` WHERE `page` = '%s'", id)
+	query := "SELECT COUNT(*) FROM `users` WHERE `page` = ?"
 
-	res, err := db.Query(query)
+	res, err := db.Query(query, id)
 	if err != nil {
 		http.Error(w, "Error executing query", http.StatusInternalServerError)
 		return
@@ -107,13 +107,13 @@ func account(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		return
 	}
 
-	query = fmt.Sprintf("SELECT * FROM `users` WHERE `page` = '%s'", id)
+	query = "SELECT * FROM `users` WHERE `page` = ?"
 
-	res, err = db.Query(query)
+	res, err = db.Query(query, id)
 	if err != nil {
-		http.Redirect(w, r, "/sign_in", http.StatusMovedPermanently)
+		http.Error(w, "Error executing query", http.StatusInternalServerError)
+		return
 	}
-
 	defer res.Close()
 
 	user := User{}

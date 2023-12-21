@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -16,11 +15,13 @@ type Basket struct {
 
 func product(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	id := r.URL.Query().Get("id")
-	query := fmt.Sprintf("SELECT katalog.id, katalog.product_name, katalog.category, katalog.seller, katalog.description, katalog.cost, users.login FROM katalog INNER JOIN users ON katalog.seller = users.page WHERE katalog.id = '%s'", id)
-	res, err := db.Query(query)
+	query := "SELECT katalog.id, katalog.product_name, katalog.category, katalog.seller, katalog.description, katalog.cost, users.login FROM katalog INNER JOIN users ON katalog.seller = users.page WHERE katalog.id = ?"
+	res, err := db.Query(query, id)
 	if err != nil {
 		http.Redirect(w, r, "/sign_in", http.StatusMovedPermanently)
+		return
 	}
+	defer res.Close()
 	var product Product
 
 	for res.Next() {
@@ -54,8 +55,8 @@ func product(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 func search(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	q := r.URL.Query().Get("q")
 
-	query := fmt.Sprintf("SELECT katalog.id, katalog.product_name, katalog.category, katalog.seller, katalog.description, katalog.cost, users.login FROM katalog INNER JOIN users ON katalog.seller = users.page WHERE katalog.product_name LIKE '%%%s%%'", q)
-	rows, err := db.Query(query)
+	query := "SELECT katalog.id, katalog.product_name, katalog.category, katalog.seller, katalog.description, katalog.cost, users.login FROM katalog INNER JOIN users ON katalog.seller = users.page WHERE katalog.product_name LIKE ?"
+	rows, err := db.Query(query, "%"+q+"%")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

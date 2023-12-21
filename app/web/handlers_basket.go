@@ -21,8 +21,8 @@ func add_to_basket(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	basket.ProductID, _ = strconv.Atoi(productID)
 	cookie, _ := getCookie(r, "session")
 
-	query := fmt.Sprintf("SELECT `page` FROM `users` WHERE `login` = '%s'", cookie.Value)
-	res, err := db.Query(query)
+	query := "SELECT `page` FROM `users` WHERE `login` = ?"
+	res, err := db.Query(query, cookie.Value)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -37,8 +37,9 @@ func add_to_basket(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		}
 	}
 
-	query = fmt.Sprintf("INSERT INTO `basket`(`basketID`, `productID`) VALUES ('%d','%d')", basket.UserID, basket.ProductID)
-	insert, err := db.Query(query)
+	query = "INSERT INTO `basket`(`basketID`, `productID`) VALUES (?, ?)"
+
+	insert, err := db.Query(query, basket.UserID, basket.ProductID)
 	if err != nil {
 		log.Println(err)
 	}
@@ -49,12 +50,14 @@ func add_to_basket(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 func basket(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	userPage := r.URL.Query().Get("id")
-	query := fmt.Sprintf("SELECT * FROM `basket` WHERE `basketID` = %s", userPage)
-	res, err := db.Query(query)
+	query := "SELECT * FROM `basket` WHERE `basketID` = ?"
+
+	res, err := db.Query(query, userPage)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
 	defer res.Close()
 
 	var baskets []Basket
@@ -72,13 +75,14 @@ func basket(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	var totalCost float32
 	totalCost = 0
 	for _, basket_prod := range baskets {
-		query = fmt.Sprintf("SELECT * FROM `katalog` WHERE `id` = '%d'", basket_prod.ProductID)
+		query := "SELECT * FROM `katalog` WHERE `id` = ?"
 
-		res, err = db.Query(query)
+		res, err := db.Query(query, basket_prod.ProductID)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+
 		defer res.Close()
 
 		for res.Next() {
@@ -103,8 +107,9 @@ func basket(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		TotalCost: totalCost,
 	}
 
-	query = fmt.Sprintf("SELECT `login` FROM `users` WHERE `page` = '%s'", userPage)
-	res, err = db.Query(query)
+	query = "SELECT `login` FROM `users` WHERE `page` = ?"
+
+	res, err = db.Query(query, userPage)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -142,10 +147,11 @@ func basket(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 func buy(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	login := r.FormValue("login")
 	totalCost, _ := strconv.ParseFloat(r.FormValue("cost"), 32)
-	balanceQuery := fmt.Sprintf("SELECT `page`,`balance` FROM `users` WHERE `login` = '%s'", login)
 	var balance float64
 	var page string
-	balanceRes, err := db.Query(balanceQuery)
+
+	balanceQuery := "SELECT `page`, `balance` FROM `users` WHERE `login` = ?"
+	balanceRes, err := db.Query(balanceQuery, login)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -162,8 +168,9 @@ func buy(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		return
 	}
 
-	ProductQuery := fmt.Sprintf("SELECT  * FROM `basket` WHERE `BasketID` = '%s'", page)
-	res, err := db.Query(ProductQuery)
+	ProductQuery := "SELECT * FROM `basket` WHERE `BasketID` = ?"
+
+	res, err := db.Query(ProductQuery, page)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -245,8 +252,9 @@ func buy(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 			log.Println("Failed to update balance:", err)
 		}
 
-		ClsQuery := fmt.Sprintf("DELETE FROM `basket` WHERE `BasketID` = '%s'", page)
-		_, err = db.Exec(ClsQuery)
+		ClsQuery := "DELETE FROM `basket` WHERE `BasketID` = ?"
+
+		_, err = db.Exec(ClsQuery, page)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -263,12 +271,11 @@ func buy(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 func clear(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	login := r.FormValue("login")
-
-	query := fmt.Sprintf("SELECT page FROM `users` WHERE `login` = '%s'", login)
-
 	var page string
 
-	res, err := db.Query(query)
+	query := "SELECT page FROM `users` WHERE `login` = ?"
+
+	res, err := db.Query(query, login)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -283,8 +290,9 @@ func clear(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		}
 	}
 
-	query = fmt.Sprintf("DELETE FROM `basket` WHERE `BasketID` = '%s'", page)
-	_, err = db.Exec(query)
+	query = "DELETE FROM `basket` WHERE `BasketID` = ?"
+
+	_, err = db.Exec(query, page)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

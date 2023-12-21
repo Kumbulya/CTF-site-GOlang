@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -46,19 +45,24 @@ func upload_product(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	product_description := r.FormValue("product_description")
 	product_cost, _ := strconv.ParseFloat(r.FormValue("product_cost"), 32)
 
-	query := fmt.Sprintf("INSERT INTO `katalog` (`product_name`, `category`, `seller`, `description`,`cost`) VALUES ('%s','%s','%s','%s','%f')",
-		product_name, product_category, user, product_description, product_cost)
-	insert, err := db.Query(query)
+	query := "INSERT INTO `katalog` (`product_name`, `category`, `seller`, `description`, `cost`) VALUES (?, ?, ?, ?, ?)"
+	insert, err := db.Exec(query, product_name, product_category, user, product_description, product_cost)
 	if err != nil {
 		log.Println(err)
 	}
 
-	defer insert.Close()
+	rowsAffected, err := insert.RowsAffected()
+	if err != nil {
+		log.Println(err)
+	}
 
-	query = fmt.Sprintf("SELECT `id` FROM `katalog` WHERE `product_name` = '%s'", product_name)
-	res, err := db.Query(query)
+	log.Printf("Inserted %d rows", rowsAffected)
+
+	query = "SELECT `id` FROM `katalog` WHERE `product_name` = ?"
+	res, err := db.Query(query, product_name)
 	if err != nil {
 		http.Redirect(w, r, "/sign_in", http.StatusMovedPermanently)
+		return
 	}
 
 	for res.Next() {
