@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"path/filepath"
 	"strconv"
 )
 
@@ -89,7 +88,7 @@ func upload_product(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		return
 	}
 
-	prod, handler, err := r.FormFile("product_self")
+	prod, _, err := r.FormFile("product_self")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -97,9 +96,7 @@ func upload_product(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 	defer prod.Close()
 
-	ext := filepath.Ext(handler.Filename)
-
-	dst2, err := os.Create("html/static/products/product_" + strconv.Itoa(new_product.Id) + ext)
+	dst2, err := os.Create("html/static/products/product_" + strconv.Itoa(new_product.Id) + ".bmp")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

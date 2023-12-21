@@ -193,7 +193,7 @@ func buy(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 		for _, prod := range baskets {
 
-			path := fmt.Sprintf("html/static/products/product_%d.txt", prod.ProductID)
+			path := fmt.Sprintf("html/static/products/product_%d.bmp", prod.ProductID)
 			file, err := os.Open(path)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -216,7 +216,7 @@ func buy(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 			}
 
 			// Устанавливаем имя файла в архиве
-			header.Name = filepath.Join("products", fmt.Sprintf("file_%d.txt", prod.ProductID))
+			header.Name = filepath.Join("products", fmt.Sprintf("file_%d.bmp", prod.ProductID))
 
 			// Создаем запись в архиве
 			writer, err := zipWriter.CreateHeader(header)
@@ -251,11 +251,14 @@ func buy(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+
 	} else if totalCost == 0 {
 		w.Write([]byte("<h1>Надо чё-то выбрать</p>"))
 	} else {
 		w.Write([]byte("<h1><a href='/'>Каталог</a></h1><p>Недостаточно средств!</p>"))
 	}
+
+	http.Redirect(w, r, "/basket?id="+page, http.StatusFound)
 }
 
 func clear(w http.ResponseWriter, r *http.Request, db *sql.DB) {
